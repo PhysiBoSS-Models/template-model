@@ -27,6 +27,15 @@ jobs:
       run: |
         python .github/workflows/get_model_shortname.py
     
+    - name: Write model's shortname to file
+      run: |
+        echo "${{ steps.read_model_shortname.outputs.model_short_name }}" > shortname.txt
+        
+    - name: Upload model's shortname
+      uses: actions/upload-artifact@v4
+      with:
+        name: shortname
+        path: shortname.txt
   
   ubuntu:
     
