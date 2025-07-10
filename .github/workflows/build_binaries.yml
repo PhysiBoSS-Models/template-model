@@ -49,9 +49,6 @@ jobs:
       with:
         python-version: '3.x'
      
-    - name: Load model
-      run: make ${{ needs.read_shortname.outputs.status }}
-      
     - name: Read model metadata
       id: read_model_metadata
       run: |
@@ -93,10 +90,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-    
-    - name: Load model
-      run: make ${{ needs.read_shortname.outputs.status }}
-      
+
     - name: Read model metadata
       id: read_model_metadata
       run: |
@@ -147,9 +141,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-
-    - name: Load model
-      run: make ${{ needs.read_shortname.outputs.status }}
         
     - name: Read model metadata
       id: read_model_metadata
@@ -196,9 +187,6 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
-
-    - name: Load model
-      run: make ${{ needs.read_shortname.outputs.status }}
         
     - name: Read model metadata
       id: read_model_metadata
@@ -237,9 +225,6 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Load model
-      run: make ${{ needs.read_shortname.outputs.status }}
-        
     - name: Read model metadata
       id: read_model_metadata
       run: |
