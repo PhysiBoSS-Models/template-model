@@ -124,10 +124,10 @@ jobs:
 
     - name: Install dependencies
       run : |
-        if ! brew list gcc@13 &>/dev/null; then
-          brew install gcc@13
+        if ! brew list gcc@14 &>/dev/null; then
+          brew install gcc@14
         else
-          echo "gcc@13 is already installed."
+          echo "gcc@14 is already installed."
         fi
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -137,7 +137,7 @@ jobs:
     - name: Build model
       run: |
         export MACOSX_DEPLOYMENT_TARGET=13
-        make PHYSICELL_CPP=g++-13 static
+        make PHYSICELL_CPP=g++-14 static
         cp ${{ needs.validate_metadata.outputs.binary }} ${{ needs.validate_metadata.outputs.binary }}_macos13
 
     - name: Caching produced project binary 
@@ -163,10 +163,10 @@ jobs:
 
     - name: Install dependencies
       run : |
-        if ! brew list gcc@13 &>/dev/null; then
-          brew install gcc@13
+        if ! brew list gcc@14 &>/dev/null; then
+          brew install gcc@14
         else
-          echo "gcc@13 is already installed."
+          echo "gcc@14 is already installed."
         fi
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -175,8 +175,8 @@ jobs:
      
     - name: Build model
       run: |
-        export MACOSX_DEPLOYMENT_TARGET=13
-        make PHYSICELL_CPP=g++-13 static
+        export MACOSX_DEPLOYMENT_TARGET=14
+        make PHYSICELL_CPP=g++-14 static
         cp ${{ needs.validate_metadata.outputs.binary }} ${{ needs.validate_metadata.outputs.binary }}_macosm1
    
     - name: Caching produced project binary 
