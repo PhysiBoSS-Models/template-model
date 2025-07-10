@@ -1,5 +1,5 @@
 VERSION := $(shell grep . VERSION.txt | cut -f1 -d:)
-PROGRAM_NAME := project
+PROGRAM_NAME := PhysiBoSS_Cell_Lines
 
 CC := g++
 # CC := g++-mp-7 # typical macports compiler name
@@ -14,7 +14,7 @@ endif
 ### MaBoSS configuration 
 # MaBoSS max nodes
 ifndef MABOSS_MAX_NODES
-MABOSS_MAX_NODES = 256
+MABOSS_MAX_NODES = 64
 endif
 
 # MaBoSS directory
@@ -86,12 +86,12 @@ PhysiCell_signal_behavior.o PhysiCell_rules.o
 PhysiCell_module_OBJECTS := PhysiCell_SVG.o PhysiCell_pathology.o PhysiCell_MultiCellDS.o PhysiCell_various_outputs.o \
 PhysiCell_pugixml.o PhysiCell_settings.o PhysiCell_geometry.o
 
-# put your custom objects here (they should be in the custom_modules directory)
+# put your custom objects here (they should be in the custom_modules directory)  
 MaBoSS := ./addons/PhysiBoSS/MaBoSS/engine/src/BooleanNetwork.h
 
 PhysiBoSS_OBJECTS := maboss_network.o maboss_intracellular.o
 
-PhysiCell_custom_module_OBJECTS := custom.o
+PhysiCell_custom_module_OBJECTS := custom.o 
 
 pugixml_OBJECTS := pugixml.o
 
@@ -102,7 +102,7 @@ ALL_OBJECTS := $(PhysiCell_OBJECTS) $(PhysiCell_custom_module_OBJECTS) $(PhysiBo
 
 all: main.cpp $(ALL_OBJECTS) $(MaBoSS)
 	$(COMPILE_COMMAND) $(INC) -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp $(LIB)
-	make name 
+	make name
 
 static: main.cpp $(ALL_OBJECTS) $(MaBoSS)
 	$(LINK_COMMAND) $(INC) -o $(PROGRAM_NAME) $(ALL_OBJECTS) main.cpp $(LIB) -static-libgcc -static-libstdc++ $(STATIC_OPENMP)
@@ -134,13 +134,13 @@ PhysiCell_utilities.o: ./core/PhysiCell_utilities.cpp
 	
 PhysiCell_custom.o: ./core/PhysiCell_custom.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_custom.cpp 
-	
+
 PhysiCell_constants.o: ./core/PhysiCell_constants.cpp
-	$(COMPILE_COMMAND) -c ./core/PhysiCell_constants.cpp 
+	$(COMPILE_COMMAND) -c ./core/PhysiCell_constants.cpp
 	
 PhysiCell_signal_behavior.o: ./core/PhysiCell_signal_behavior.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_signal_behavior.cpp 
-	
+
 PhysiCell_rules.o: ./core/PhysiCell_rules.cpp
 	$(COMPILE_COMMAND) -c ./core/PhysiCell_rules.cpp 
 
@@ -194,14 +194,14 @@ PhysiCell_pugixml.o: ./modules/PhysiCell_pugixml.cpp
 	$(COMPILE_COMMAND) -c ./modules/PhysiCell_pugixml.cpp
 	
 PhysiCell_settings.o: ./modules/PhysiCell_settings.cpp
-	$(COMPILE_COMMAND) -c ./modules/PhysiCell_settings.cpp
+	$(COMPILE_COMMAND) -c ./modules/PhysiCell_settings.cpp	
 	
 PhysiCell_basic_signaling.o: ./core/PhysiCell_basic_signaling.cpp
-	$(COMPILE_COMMAND) -c ./core/PhysiCell_basic_signaling.cpp 	
+	$(COMPILE_COMMAND) -c ./core/PhysiCell_basic_signaling.cpp
 	
 PhysiCell_geometry.o: ./modules/PhysiCell_geometry.cpp
 	$(COMPILE_COMMAND) -c ./modules/PhysiCell_geometry.cpp 
-	
+
 # user-defined PhysiCell modules
 
 Compile_MaBoSS: ./addons/PhysiBoSS/MaBoSS/engine/src/BooleanNetwork.h
@@ -234,7 +234,7 @@ reset:
 	touch ./core/PhysiCell_cell.cpp
 	rm ALL_CITATIONS.txt 
 	cp ./config/PhysiCell_settings-backup.xml ./config/PhysiCell_settings.xml 
-	rm -fr ./config/cells.csv ./config/cell_rules.csv
+	rm -rf ./config/model_*.bnd ./config/model.cfg ./config/cells.csv
 	rm -rf ./scripts
 
 MaBoSS-clean:
@@ -245,15 +245,17 @@ clean:
 	rm -f $(PROGRAM_NAME)*
 	
 data-cleanup:
-	rm -rf ./output
-	mkdir ./output
+	rm -f *.mat
+	rm -f *.xml
+	rm -f *.svg
+	rm -f ./output/*
 	touch ./output/empty.txt
 	
 # archival 
-	
+
 checkpoint: 
 	zip -r $$(date +%b_%d_%Y_%H%M).zip Makefile *.cpp *.h config/*.xml custom_modules/* 
-	
+
 zip:
 	zip -r latest.zip Makefile* *.cpp *.h BioFVM/* config/* core/* custom_modules/* matlab/* modules/* sample_projects/* 
 	cp latest.zip $$(date +%b_%d_%Y_%H%M).zip
@@ -274,25 +276,9 @@ untar:
 	cp ./archives/latest.tar .
 	tar -xzf latest.tar
 
-# easier animation 
-
-FRAMERATE := 24
-OUTPUT := output
-
-jpeg: 
-	@magick identify -format "%h" $(OUTPUT)/initial.svg > __H.txt 
-	@magick identify -format "%w" $(OUTPUT)/initial.svg > __W.txt 
-	@expr 2 \* \( $$(grep . __H.txt) / 2 \) > __H1.txt 
-	@expr 2 \* \( $$(grep . __W.txt) / 2 \) > __W1.txt 
-	@echo "$$(grep . __W1.txt)!x$$(grep . __H1.txt)!" > __resize.txt 
-	@magick mogrify -format jpg -resize $$(grep . __resize.txt) $(OUTPUT)/s*.svg
-	rm -f __H*.txt __W*.txt __resize.txt 
-	
-gif: 
-	magick convert $(OUTPUT)/s*.svg $(OUTPUT)/out.gif 
-	 
 movie:
-	ffmpeg -r $(FRAMERATE) -f image2 -i $(OUTPUT)/snapshot%08d.jpg -vcodec libx264 -pix_fmt yuv420p -strict -2 -tune animation -crf 15 -acodec none $(OUTPUT)/out.mp4
+	ffmpeg -r 25 -i output/snapshot%08d.svg -pix_fmt yuv420p output.mp4
+	vlc output.mp4
 	
 # upgrade rules 
 
@@ -322,7 +308,7 @@ upgrade: $(SOURCE)
 	mv -f PhysiCell/documentation/User_Guide.pdf documentation
 	rm -f -r PhysiCell
 	rm -f $(SOURCE) 
-
+	
 # use: make save PROJ=your_project_name
 PROJ := my_project
 
