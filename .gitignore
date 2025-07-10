@@ -14,6 +14,7 @@ Makefile-backup
 output/
 studio/
 user_projects/
+sample_projects/
 sample_projects_intracellular/
 tests/
 unit_tests/
