@@ -33,7 +33,7 @@
 #                                                                             #
 # BSD 3-Clause License (see https://opensource.org/licenses/BSD-3-Clause)     #
 #                                                                             #
-# Copyright (c) 2015-2022, Paul Macklin and the PhysiCell Project             #
+# Copyright (c) 2015-2018, Paul Macklin and the PhysiCell Project             #
 # All rights reserved.                                                        #
 #                                                                             #
 # Redistribution and use in source and binary forms, with or without          #
@@ -75,12 +75,11 @@
 
 #include "./core/PhysiCell.h"
 #include "./modules/PhysiCell_standard_modules.h" 
-
 // put custom code modules here! 
 
 #include "./custom_modules/custom.h" 
 #include "./addons/PhysiBoSS/src/maboss_intracellular.h"	
-	
+
 using namespace BioFVM;
 using namespace PhysiCell;
 
@@ -93,7 +92,7 @@ int main( int argc, char* argv[] )
 	if( argc > 1 )
 	{
 		XML_status = load_PhysiCell_config_file( argv[1] ); 
-		sprintf( copy_command , "cp %s %s/PhysiCell_settings.xml" , argv[1] , PhysiCell_settings.folder.c_str() ); 
+		sprintf( copy_command , "cp %s %s" , argv[1] , PhysiCell_settings.folder.c_str() ); 
 	}
 	else
 	{
@@ -119,7 +118,7 @@ int main( int argc, char* argv[] )
 	/* PhysiCell setup */ 
  	
 	// set mechanics voxel size, and match the data structure to BioFVM
-	double mechanics_voxel_size = 30; 
+	double mechanics_voxel_size = 10; 
 	Cell_Container* cell_container = create_cell_container_for_microenvironment( microenvironment, mechanics_voxel_size );
 	
 	/* Users typically start modifying here. START USERMODS */ 
@@ -127,6 +126,7 @@ int main( int argc, char* argv[] )
 	create_cell_types();
 	
 	setup_tissue();
+
 
 	/* Users typically stop modifying here. END USERMODS */ 
 	
@@ -139,8 +139,11 @@ int main( int argc, char* argv[] )
 	
 	// save a simulation snapshot 
 	
+	//mkdir("../output");
+
 	char filename[1024];
 	sprintf( filename , "%s/initial" , PhysiCell_settings.folder.c_str() ); 
+	
 	save_PhysiCell_to_MultiCellDS_v2( filename , microenvironment , PhysiCell_globals.current_time ); 
 	
 	// save a quick SVG cross section through z = 0, after setting its 
@@ -150,7 +153,7 @@ int main( int argc, char* argv[] )
 
 	// for simplicity, set a pathology coloring function 
 	
-	std::vector<std::string> (*cell_coloring_function)(Cell*) = my_coloring_function; 
+	std::vector<std::string> (*cell_coloring_function)(Cell*) = my_coloring_function;
 	
 	sprintf( filename , "%s/initial.svg" , PhysiCell_settings.folder.c_str() ); 
 	SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
@@ -215,8 +218,10 @@ int main( int argc, char* argv[] )
 				}
 			}
 
-			// Configure treatments
-			treatment_function();
+			/*
+			  Custom add-ons could potentially go here. 
+			*/
+
 
 			// update the microenvironment
 			microenvironment.simulate_diffusion_decay( diffusion_dt );
@@ -224,13 +229,11 @@ int main( int argc, char* argv[] )
 			// run PhysiCell 
 			((Cell_Container *)microenvironment.agent_container)->update_all_cells( PhysiCell_globals.current_time );
 			
-			/*
-			  Custom add-ons could potentially go here. 
-			*/
+			//std::cout<< "done" << std::endl;
 			
 			PhysiCell_globals.current_time += diffusion_dt;
 		}
-		
+
 		if( PhysiCell_settings.enable_legacy_saves == true )
 		{			
 			log_output(PhysiCell_globals.current_time, PhysiCell_globals.full_output_index, microenvironment, report_file);
@@ -249,7 +252,7 @@ int main( int argc, char* argv[] )
 	
 	sprintf( filename , "%s/final.svg" , PhysiCell_settings.folder.c_str() ); 
 	SVG_plot( filename , microenvironment, 0.0 , PhysiCell_globals.current_time, cell_coloring_function );
-	
+
 	// timer 
 	
 	std::cout << std::endl << "Total simulation runtime: " << std::endl; 
