@@ -1,12 +1,21 @@
 # About
 
-This repository is a template for PhysiBoSS models, that can be used to submit a new model to the database.
+This repository is an update of the prostate model to version 2.2.3 of PhysiBoSS. The project does not rely on the cell rules to perform the inhibition, but on an ad-hoc cell sensitivity that depends on the cell line.
+
+A prior version of this model was used to simulate the drug response in prostate cell lines in Figures 6, 7 and 8 of [the PhysiBoSS 2.0 paper](https://www.nature.com/articles/s41540-023-00314-4).
 
 # Getting started
 
-- Fork this repository.
-- Make a new branch from main for your PhysiBoSS model. 
-- Update the new branch with your model
-- Update model.yml metadata file, as well as the readme for a quick description of the model
-- Open a pull request. Building of your model will be tested on Windows, Mac and Linux.
-- When your pull request is accepted by the editors a new repository will be created in the github PhysiBoSS-Models organization, and build/upload of your model will automatically be triggered. Once complete, the model is available on PhysiBoSS-Models.
+The XML in the `config` folder are: 
+- PhysiCell_settings_LNCaP.xml: LNCaP cell line simulation
+- PhysiCell_settings_LNCaP_Luminespib_2.xml: LNCaP cell line simulation adding Luminespib drug (anti_HSPs).
+- PhysiCell_settings_LNCaP_Pictilisib_2.xml: LNCaP cell line simulation adding Pictilisib drug (anti_PI3K).
+- PhysiCell_settings_LNCaP_Luminespib_Pictilisib_2.xml: LNCaP cell line simulation adding Luminespib and Pictilisib drugs.
+
+Files in the `scripts`  folder have post processing scripts.
+
+# Authors:
+
+Arnau Montagud, Annika Meert, Gerard Pradas and Miguel Ponce de Leon, BSC-CNS
+
+Contact: arnau.montagud at csic.es
