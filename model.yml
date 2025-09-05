@@ -2,4 +2,7 @@ short_name: prostate
 version: 1.0.0
 binary: prostate
 config: 
+  - config/PhysiCell_settings_LNCaP.xml
   - config/PhysiCell_settings_LNCaP_Luminespib_2.xml
+  - config/PhysiCell_settings_LNCaP_Pictilisib_2.xml
+  - config/PhysiCell_settings_LNCaP_Luminespib_Pictilisib_2.xml
