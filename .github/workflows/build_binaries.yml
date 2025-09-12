@@ -44,7 +44,7 @@ jobs:
   
   ubuntu:
     
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: validate_metadata
     steps:
     - uses: actions/checkout@v4
