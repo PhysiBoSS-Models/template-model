@@ -1,8 +1,5 @@
-short_name: prostate
+short_name: template-model
 version: 1.0.0
-binary: prostate
+binary: project
 config: 
-  - config/PhysiCell_settings_LNCaP.xml
-  - config/PhysiCell_settings_LNCaP_Luminespib_2.xml
-  - config/PhysiCell_settings_LNCaP_Pictilisib_2.xml
-  - config/PhysiCell_settings_LNCaP_Luminespib_Pictilisib_2.xml
+  - config/PhysiCell_settings.xml
